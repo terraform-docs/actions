@@ -37,7 +37,7 @@ jobs:
         git-push: "true"
 ```
 
-| WARNING: If USAGE.md already exists it will need to be updated, with the block delimeters `<!--- BEGIN_TF_DOCS --->` and `<!--- END_TF_DOCS --->`, where the generated markdown will be injected. |
+| NOTE: If USAGE.md already exists it will need to be updated, with the block delimeters `<!--- BEGIN_TF_DOCS --->` and `<!--- END_TF_DOCS --->`, where the generated markdown will be injected. |
 | --- |
 
 ## Configuration
@@ -60,7 +60,7 @@ jobs:
 | output-file | File in module directory where the docs should be placed | `USAGE.md` | false |
 | output-format | terraform-docs format to generate content (see [all formats](https://github.com/terraform-docs/terraform-docs/blob/master/docs/FORMATS\_GUIDE.md)) (ignored if `config-file` is set) | `markdown table` | false |
 | output-method | Method should be one of `replace`, `inject`, or `print` | `inject` | false |
-| template | When provided will be used as the template if/when the `output-file` does not exist | `# Usage<br><br><!--- BEGIN\_TF\_DOCS ---><br><!--- END\_TF\_DOCS ---><br>` | false |
+| template | When provided will be used as the template if/when the `output-file` does not exist | `<!-- BEGIN_TF_DOCS -->\n{{ .Content }}\n<!-- END_TF_DOCS -->` | false |
 | working-dir | Comma separated list of directories to generate docs for (ignored if `atlantis-file` or `find-dir` is set) | `.` | false |
 
 #### Output Method (output-method)
@@ -78,8 +78,8 @@ jobs:
   Instead of replacing the `output-file`, this will inject the generated documentation
   into the existing file between the predefined delimeters: `<!--- BEGIN_TF_DOCS --->`
   and `<!--- END_TF_DOCS --->`. If the file exists but does not contain the delimeters,
-  the action will fail for the given module. If the file doesn't exist, it will create
-  it using the value template which MUST have the delimeters.
+  the action will append the generated content at the end of `output-file`. If the file
+  doesn't exist, it will create it using the value template which MUST have the delimeters.
 
 #### Auto commit changes
 

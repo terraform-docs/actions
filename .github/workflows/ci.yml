@@ -12,8 +12,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: ${{github.event.pull_request.head.ref}}
-          repository: ${{github.event.pull_request.head.repo.full_name}}
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: Build Docker image
         run: |
@@ -24,7 +24,8 @@ jobs:
         uses: ./
         with:
           working-dir: examples/tf11_basic
-          template: |
+          template: |-
+            <!-- BEGIN_TF_DOCS -->
             # Test tf11 basic
 
             ## Verify
@@ -34,8 +35,8 @@ jobs:
 
             # Usage
 
-            <!--- BEGIN_TF_DOCS --->
-            <!--- END_TF_DOCS --->
+            {{ .Content }}
+            <!-- END_TF_DOCS -->
           indention: 3
 
       - name: Should generate USAGE.md for tf11_extra_args
@@ -73,13 +74,6 @@ jobs:
           working-dir: examples/tf12_config
           output-file: README.md
           config-file: .terraform-docs.yml
-
-      - name: Should generate README.md for tf12_fail_diff
-        uses: ./
-        with:
-          working-dir: examples/tf12_fail_diff
-          output-file: README.md
-          indention: 3
 
       - name: Should generate README.md for tf12_inject and push up all changes
         uses: ./

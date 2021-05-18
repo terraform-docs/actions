@@ -1,5 +1,6 @@
 {{- define "escape_chars" }}{{ . | strings.ReplaceAll "_" "\\_" | strings.ReplaceAll "|" "\\|" | strings.ReplaceAll "*" "\\*" }}{{- end }}
 {{- define "sanatize_string" }}{{ . | strings.ReplaceAll "\n\n" "<br><br>" | strings.ReplaceAll "  \n" "<br>" | strings.ReplaceAll "\n" "<br>" | tmpl.Exec "escape_chars" }}{{- end }}
+{{- define "sanatize_value" }}{{ . | strings.ReplaceAll "\n\n" "\\n\\n" | strings.ReplaceAll "  \n" "\\n" | strings.ReplaceAll "\n" "\\n" }}{{- end }}
 {{- $action := (datasource "action") -}}
 {{- $version := or (getenv "VERSION") "main" -}}
 # terraform-docs GitHub Actions
@@ -46,7 +47,7 @@ jobs:
         git-push: "true"
 ```
 
-| WARNING: If USAGE.md already exists it will need to be updated, with the block delimeters `<!--- BEGIN_TF_DOCS --->` and `<!--- END_TF_DOCS --->`, where the generated markdown will be injected. |
+| NOTE: If USAGE.md already exists it will need to be updated, with the block delimeters `<!--- BEGIN_TF_DOCS --->` and `<!--- END_TF_DOCS --->`, where the generated markdown will be injected. |
 | --- |
 
 ## Configuration
@@ -56,7 +57,7 @@ jobs:
 | Name | Description | Default | Required |
 |------|-------------|---------|----------|
 {{- range $key, $input := $action.inputs }}
-| {{ tmpl.Exec "escape_chars" $key }} | {{ if (has $input "description") }}{{ tmpl.Exec "sanatize_string" $input.description }}{{ else }}{{ tmpl.Exec "escape_chars" $key }}{{ end }} | {{ if (has $input "default") }}`{{ if $input.default }}{{ tmpl.Exec "sanatize_string" $input.default }}{{ else }}""{{ end }}`{{ else }}N/A{{ end }} | {{ if (has $input "required") }}{{ $input.required }}{{ else }}false{{ end }} |
+| {{ tmpl.Exec "escape_chars" $key }} | {{ if (has $input "description") }}{{ tmpl.Exec "sanatize_string" $input.description }}{{ else }}{{ tmpl.Exec "escape_chars" $key }}{{ end }} | {{ if (has $input "default") }}`{{ if $input.default }}{{ tmpl.Exec "sanatize_value" $input.default }}{{ else }}""{{ end }}`{{ else }}N/A{{ end }} | {{ if (has $input "required") }}{{ $input.required }}{{ else }}false{{ end }} |
 {{- end }}
 
 #### Output Method (output-method)
@@ -74,8 +75,8 @@ jobs:
   Instead of replacing the `output-file`, this will inject the generated documentation
   into the existing file between the predefined delimeters: `<!--- BEGIN_TF_DOCS --->`
   and `<!--- END_TF_DOCS --->`. If the file exists but does not contain the delimeters,
-  the action will fail for the given module. If the file doesn't exist, it will create
-  it using the value template which MUST have the delimeters.
+  the action will append the generated content at the end of `output-file`. If the file
+  doesn't exist, it will create it using the value template which MUST have the delimeters.
 
 #### Auto commit changes
 
