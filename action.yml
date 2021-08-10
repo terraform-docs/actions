@@ -33,11 +33,10 @@ inputs:
     default: "USAGE.md"
   template:
     description: When provided will be used as the template if/when the `output-file` does not exist
-    default: |
-      # Usage
-
-      <!--- BEGIN_TF_DOCS --->
-      <!--- END_TF_DOCS --->
+    default: |-
+      <!-- BEGIN_TF_DOCS -->
+      {{ .Content }}
+      <!-- END_TF_DOCS -->
     required: false
   args:
     description: Additional arguments to pass to the command (see [full documentation](https://github.com/terraform-docs/terraform-docs/tree/master/docs))

@@ -7,7 +7,8 @@
   uses: ./
   with:
     working-dir: examples/tf11_basic
-    template: |
+    template: |-
+      <!-- BEGIN_TF_DOCS -->
       # Test tf11 basic
 
       ## Verify
@@ -17,8 +18,8 @@
 
       # Usage
 
-      <!--- BEGIN_TF_DOCS --->
-      <!--- END_TF_DOCS --->
+      {{ .Content }}
+      <!-- END_TF_DOCS -->
     indention: 3
 ```
 
