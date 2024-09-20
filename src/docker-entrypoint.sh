@@ -152,7 +152,7 @@ update_doc() {
     fi
 
     if [ "${INPUT_OUTPUT_METHOD}" == "inject" ] || [ "${INPUT_OUTPUT_METHOD}" == "replace" ]; then
-        git_add "${working_dir}/${OUTPUT_FILE}"
+        git_add "${working_dir}/${INPUT_OUTPUT_FILE}"
     fi
 }
 
